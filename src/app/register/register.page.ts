@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonContent } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
@@ -21,7 +22,6 @@ export class RegisterPage implements OnInit {
     password_confirm: '',
   };
 
-  public host_url: string = 'http://localhost:3000';
   ngOnInit() {}
 
   onRegister() {
@@ -34,7 +34,7 @@ export class RegisterPage implements OnInit {
     }
 
     this.http
-      .post(`${this.host_url}/api/auth/register`, this.user)
+      .post(`${environment.apiUrl}/api/auth/register`, this.user)
       .subscribe((response: any) => {
         console.log(response);
         this.router.navigate(['/login']);
