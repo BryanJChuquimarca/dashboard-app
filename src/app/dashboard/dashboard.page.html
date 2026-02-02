@@ -1,7 +1,6 @@
 
 <ion-content>
   <div class="container">
-    <!-- Header Section -->
     <div class="header-section">
       <h1>Bienvenido a tu Dashboard</h1>
       <p class="subtitle">Organiza y gestiona tus tareas de forma eficiente</p>
@@ -11,7 +10,6 @@
       </ion-button>
     </div>
 
-    <!-- Empty State -->
     @if (itemsDashboard.length === 0) {
       <div class="empty-state">
         <ion-icon name="clipboard-outline"></ion-icon>
@@ -22,9 +20,9 @@
 
     <!-- Tasks List -->
     @if (itemsDashboard.length > 0) {
-      <div class="tasks-container">
+      <div class="tasks-container" cdkDropList (cdkDropListDropped)="drop($event)">
         @for (item of itemsDashboard; track item.id) {
-          <ion-card class="task-card" [class.completed]="item.status === 'completed'">
+          <ion-card class="task-card" [class.completed]="item.status === 'completed'" cdkDrag>
             <ion-card-header>
               <div class="card-header-content">
                 <ion-card-title>{{ item.title }}</ion-card-title>

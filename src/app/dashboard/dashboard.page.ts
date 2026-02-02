@@ -24,6 +24,12 @@ import {
   createOutline,
   trashOutline,
 } from 'ionicons/icons';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDropList,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-dashboard',
@@ -42,6 +48,8 @@ import {
     IonCardContent,
     IonBadge,
     FormsModule,
+    CdkDropList,
+    CdkDrag,
   ],
 })
 export class DashboardPage implements OnInit {
@@ -67,6 +75,14 @@ export class DashboardPage implements OnInit {
     if (token) {
       this.loadDashboard();
     }
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(
+      this.itemsDashboard,
+      event.previousIndex,
+      event.currentIndex,
+    );
   }
 
   loadDashboard() {
