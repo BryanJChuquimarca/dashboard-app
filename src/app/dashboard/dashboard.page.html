@@ -1,54 +1,56 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>dashboard</ion-title>
-  </ion-toolbar>
-</ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-grid>
-    <ion-row>
-      <ion-col class="ion-text-middle" size="1"
-        ><button (click)="openModal();">
-          <span>
-            <svg
-              height="16"
-              width="24"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M0 0h24v24H0z" fill="none"></path>
-              <path
-                d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"
-                fill="currentColor"
-              ></path>
-            </svg>
-            Create
-          </span>
-        </button></ion-col
-      >
-    </ion-row>
-  </ion-grid>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="1">ID</ion-col>
-      <ion-col size="2">TITULO</ion-col>
-      <ion-col size="4">DESCRIPCION</ion-col>
-      <ion-col size="2">ESTADO</ion-col>
-      <ion-col size="3">ACCIONES</ion-col>
-    </ion-row>
-  </ion-grid>
-  <ion-grid>
-    @for (items of itemsDashboard; track items; let i = $index) {
-    <ion-row>
-      <ion-col size="1">{{items.id}}</ion-col>
-      <ion-col size="2">{{items.title}}</ion-col>
-      <ion-col size="4">{{items.description}}</ion-col>
-      <ion-col size="2">{{items.status}}</ion-col>
-      <ion-col size="3">
-        <button (click)="openEditModal(items)">Editar</button>
-        <button (click)="deleteItem(items.id)" style="margin-left: 8px; color: red;">Eliminar</button>
-      </ion-col>
-    </ion-row>
+<ion-content>
+  <div class="container">
+    <!-- Header Section -->
+    <div class="header-section">
+      <h1>Bienvenido a tu Dashboard</h1>
+      <p class="subtitle">Organiza y gestiona tus tareas de forma eficiente</p>
+      <ion-button expand="block" class="add-button" (click)="openModal()">
+        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+        Nueva Tarea
+      </ion-button>
+    </div>
+
+    <!-- Empty State -->
+    @if (itemsDashboard.length === 0) {
+      <div class="empty-state">
+        <ion-icon name="clipboard-outline"></ion-icon>
+        <h2>No hay tareas aún</h2>
+        <p>Comienza creando tu primera tarea</p>
+      </div>
     }
-  </ion-grid>
+
+    <!-- Tasks List -->
+    @if (itemsDashboard.length > 0) {
+      <div class="tasks-container">
+        @for (item of itemsDashboard; track item.id) {
+          <ion-card class="task-card" [class.completed]="item.status === 'completed'">
+            <ion-card-header>
+              <div class="card-header-content">
+                <ion-card-title>{{ item.title }}</ion-card-title>
+                <ion-badge [color]="getStatusColor(item.status)">
+                  {{ getStatusLabel(item.status) }}
+                </ion-badge>
+              </div>
+            </ion-card-header>
+            
+            <ion-card-content>
+              <p class="description">{{ item.description || 'Sin descripción' }}</p>
+              
+              <div class="actions">
+                <ion-button fill="outline" size="small" (click)="openEditModal(item)">
+                  <ion-icon name="create-outline" slot="start"></ion-icon>
+                  Editar
+                </ion-button>
+                <ion-button fill="outline" size="small" color="danger" (click)="deleteItem(item.id)">
+                  <ion-icon name="trash-outline" slot="start"></ion-icon>
+                  Eliminar
+                </ion-button>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        }
+      </div>
+    }
+  </div>
 </ion-content>

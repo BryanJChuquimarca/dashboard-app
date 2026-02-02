@@ -1,41 +1,67 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import {
   IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonRow,
-  IonGrid,
-  IonCol,
+  IonButton,
+  IonIcon,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonBadge,
   ModalController,
 } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { FormInsertPage } from '../form-insert/form-insert.page';
+import { addIcons } from 'ionicons';
+import {
+  listOutline,
+  logOutOutline,
+  addCircleOutline,
+  clipboardOutline,
+  createOutline,
+  trashOutline,
+} from 'ionicons/icons';
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
   imports: [
-    IonGrid,
-    IonRow,
-    IonHeader,
     IonContent,
-    IonTitle,
-    IonToolbar,
-    IonCol,
-    IonGrid,
-    IonRow,
-    FormsModule
+
+    IonButton,
+
+    IonIcon,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonBadge,
+    FormsModule,
   ],
 })
 export class DashboardPage implements OnInit {
-  message =
-    'This modal example uses the modalController to present and dismiss modals.';
-  constructor(private http: HttpClient, private modalCtrl: ModalController) {}
   public itemsDashboard: any[] = [];
+
+  constructor(
+    private http: HttpClient,
+    private modalCtrl: ModalController,
+    private router: Router,
+  ) {
+    addIcons({
+      listOutline,
+      logOutOutline,
+      addCircleOutline,
+      clipboardOutline,
+      createOutline,
+      trashOutline,
+    });
+  }
+
   ngOnInit() {
     const token = localStorage.getItem('token');
     if (token) {
@@ -51,7 +77,7 @@ export class DashboardPage implements OnInit {
       },
       (error) => {
         console.error('Error loading dashboard data:', error);
-      }
+      },
     );
   }
 
@@ -64,8 +90,6 @@ export class DashboardPage implements OnInit {
     const { data, role } = await modal.onWillDismiss();
 
     if (role === 'confirm' && data) {
-      this.message = `Se ha agregado la tarea: ${data.title}`;
-      // Recargar la lista de tareas
       this.loadDashboard();
     }
   }
@@ -75,15 +99,14 @@ export class DashboardPage implements OnInit {
       component: FormInsertPage,
       componentProps: {
         item: item,
-        isEditMode: true
-      }
+        isEditMode: true,
+      },
     });
     modal.present();
 
     const { data, role } = await modal.onWillDismiss();
 
     if (role === 'confirm' && data) {
-      this.message = `Tarea actualizada: ${data.title}`;
       this.loadDashboard();
     }
   }
@@ -97,9 +120,44 @@ export class DashboardPage implements OnInit {
         },
         (error) => {
           console.error('Error al eliminar:', error);
-          alert('Error al eliminar: ' + (error.error?.message || error.message));
-        }
+          alert(
+            'Error al eliminar: ' + (error.error?.message || error.message),
+          );
+        },
       );
+    }
+  }
+
+  logout() {
+    if (confirm('¿Seguro que deseas cerrar sesión?')) {
+      localStorage.removeItem('token');
+      this.router.navigate(['/login']);
+    }
+  }
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'completed':
+        return 'success';
+      case 'in-progress':
+        return 'warning';
+      case 'pending':
+        return 'medium';
+      default:
+        return 'medium';
+    }
+  }
+
+  getStatusLabel(status: string): string {
+    switch (status) {
+      case 'completed':
+        return 'Completada';
+      case 'in-progress':
+        return 'En Progreso';
+      case 'pending':
+        return 'Pendiente';
+      default:
+        return status;
     }
   }
 }

@@ -13,9 +13,21 @@ import {
   IonInput,
   IonSelect,
   IonSelectOption,
+  IonIcon,
+  IonTextarea,
 } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { addIcons } from 'ionicons';
+import { 
+  closeOutline, 
+  checkmarkOutline, 
+  textOutline,
+  documentTextOutline,
+  flagOutline,
+  addCircleOutline,
+  saveOutline
+} from 'ionicons/icons';
 
 @Component({
   selector: 'app-form-insert',
@@ -35,6 +47,8 @@ import { environment } from '../../environments/environment';
     IonInput,
     IonSelect,
     IonSelectOption,
+    IonIcon,
+    IonTextarea,
   ],
 })
 export class FormInsertPage implements OnInit {
@@ -47,7 +61,17 @@ export class FormInsertPage implements OnInit {
   constructor(
     private modalCtrl: ModalController,
     private http: HttpClient,
-  ) {}
+  ) {
+    addIcons({ 
+      closeOutline, 
+      checkmarkOutline, 
+      textOutline,
+      documentTextOutline,
+      flagOutline,
+      addCircleOutline,
+      saveOutline
+    });
+  }
 
   ngOnInit() {
     if (this.isEditMode && this.item) {
@@ -62,7 +86,6 @@ export class FormInsertPage implements OnInit {
   }
 
   confirm() {
-    // Validar que al menos tenga título
     if (!this.title.trim()) {
       alert('El título es obligatorio');
       return;
@@ -85,7 +108,6 @@ export class FormInsertPage implements OnInit {
           alert('Error al actualizar: ' + (error.error?.message || error.message));
         }
       );
-
     } else {
       this.http.post(`${environment.apiUrl}/api/dashboard`, taskData).subscribe(
         (response: any) => {
