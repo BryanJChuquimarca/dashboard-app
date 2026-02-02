@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import {
   IonContent,
@@ -40,7 +40,6 @@ import {
     IonHeader,
     IonTitle,
     IonToolbar,
-    CommonModule,
     FormsModule,
     IonButton,
     IonItem,
@@ -48,8 +47,8 @@ import {
     IonSelect,
     IonSelectOption,
     IonIcon,
-    IonTextarea,
-  ],
+    IonTextarea
+],
 })
 export class FormInsertPage implements OnInit {
   title: string = '';

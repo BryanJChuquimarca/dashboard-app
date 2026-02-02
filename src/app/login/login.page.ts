@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { IonContent } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonContent, CommonModule, FormsModule],
+  imports: [IonContent, FormsModule],
 })
 export class LoginPage implements OnInit {
   constructor(private http: HttpClient, private router: Router) {}
