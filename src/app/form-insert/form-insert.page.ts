@@ -41,13 +41,21 @@ export class FormInsertPage implements OnInit {
   title: string = '';
   description: string = '';
   status: string = 'pending';
+  item: any = null;
+  isEditMode: boolean = false;
 
   constructor(
     private modalCtrl: ModalController,
     private http: HttpClient,
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.isEditMode && this.item) {
+      this.title = this.item.title;
+      this.description = this.item.description;
+      this.status = this.item.status;
+    }
+  }
 
   cancel() {
     return this.modalCtrl.dismiss(null, 'cancel');
@@ -60,25 +68,35 @@ export class FormInsertPage implements OnInit {
       return;
     }
 
-    // POST de tarea
-    const newTask = {
+    const taskData = {
       title: this.title,
       description: this.description,
       status: this.status,
     };
 
-    this.http.post(`${environment.apiUrl}/api/dashboard`, newTask).subscribe(
-      (response: any) => {
-        console.log('Tarea creada:', response);
-        // Cerrar modal y pasar la nueva tarea
-        return this.modalCtrl.dismiss(response, 'confirm');
-      },
-      (error) => {
-        console.error('Error al crear tarea:', error);
-        alert(
-          'Error al crear la tarea: ' + (error.error?.message || error.message),
-        );
-      },
-    );
+    if (this.isEditMode && this.item) {
+      this.http.patch(`${environment.apiUrl}/api/dashboard/${this.item.id}`, taskData).subscribe(
+        (response: any) => {
+          console.log('Tarea actualizada:', response);
+          return this.modalCtrl.dismiss(response, 'confirm');
+        },
+        (error) => {
+          console.error('Error al actualizar tarea:', error);
+          alert('Error al actualizar: ' + (error.error?.message || error.message));
+        }
+      );
+
+    } else {
+      this.http.post(`${environment.apiUrl}/api/dashboard`, taskData).subscribe(
+        (response: any) => {
+          console.log('Tarea creada:', response);
+          return this.modalCtrl.dismiss(response, 'confirm');
+        },
+        (error) => {
+          console.error('Error al crear tarea:', error);
+          alert('Error al crear la tarea: ' + (error.error?.message || error.message));
+        }
+      );
+    }
   }
 }

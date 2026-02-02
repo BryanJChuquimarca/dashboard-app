@@ -69,4 +69,37 @@ export class DashboardPage implements OnInit {
       this.loadDashboard();
     }
   }
+
+  async openEditModal(item: any) {
+    const modal = await this.modalCtrl.create({
+      component: FormInsertPage,
+      componentProps: {
+        item: item,
+        isEditMode: true
+      }
+    });
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+
+    if (role === 'confirm' && data) {
+      this.message = `Tarea actualizada: ${data.title}`;
+      this.loadDashboard();
+    }
+  }
+
+  deleteItem(id: number) {
+    if (confirm('¿Estás seguro de eliminar esta tarea?')) {
+      this.http.delete(`${environment.apiUrl}/api/dashboard/${id}`).subscribe(
+        (response: any) => {
+          console.log('Tarea eliminada:', response);
+          this.loadDashboard();
+        },
+        (error) => {
+          console.error('Error al eliminar:', error);
+          alert('Error al eliminar: ' + (error.error?.message || error.message));
+        }
+      );
+    }
+  }
 }

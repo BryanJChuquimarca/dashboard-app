@@ -44,7 +44,10 @@
       <ion-col size="2">{{items.title}}</ion-col>
       <ion-col size="4">{{items.description}}</ion-col>
       <ion-col size="2">{{items.status}}</ion-col>
-      <ion-col size="3">botones</ion-col>
+      <ion-col size="3">
+        <button (click)="openEditModal(items)">Editar</button>
+        <button (click)="deleteItem(items.id)" style="margin-left: 8px; color: red;">Eliminar</button>
+      </ion-col>
     </ion-row>
     }
   </ion-grid>
