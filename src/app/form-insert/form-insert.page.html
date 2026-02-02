@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Cancelar</ion-button>
+    </ion-buttons>
+    <ion-title>Tarea</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirm()" [strong]="true">Confirmar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-input
+      name="title"
+      labelPlacement="stacked"
+      label="Introduce el titulo"
+      [(ngModel)]="title"
+      placeholder="Tu titulo"
+    ></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input
+      name="description"
+      labelPlacement="stacked"
+      label="Introduce la descripcion"
+      [(ngModel)]="description"
+      placeholder="descripcion"
+    ></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-select
+      name="status"
+      labelPlacement="stacked"
+      label="Estado"
+      [(ngModel)]="status"
+      placeholder="Selecciona un estado"
+    >
+      <ion-select-option value="pending">Pendiente</ion-select-option>
+      <ion-select-option value="in-progress">En progreso</ion-select-option>
+      <ion-select-option value="completed">Completado</ion-select-option>
+    </ion-select>
+  </ion-item>
+</ion-content>

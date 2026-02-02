@@ -27,7 +27,11 @@ export class LoginPage implements OnInit {
       (response: any) => {
         console.log(response);
         localStorage.setItem('token', response.token);
-        this.router.navigate(['/dashboard']);
+        
+        // Navegar después de un pequeño delay para asegurar que el token se guardó
+        setTimeout(() => {
+          this.router.navigate(['/dashboard']);
+        }, 100);
       },
       (error) => {
         console.error('Error en el login:', error);

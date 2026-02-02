@@ -9,8 +9,10 @@ import {
   IonRow,
   IonGrid,
   IonCol,
+  ModalController,
 } from '@ionic/angular/standalone';
-
+import { FormsModule } from '@angular/forms';
+import { FormInsertPage } from '../form-insert/form-insert.page';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -21,20 +23,24 @@ import {
     IonRow,
     IonHeader,
     IonContent,
-
     IonTitle,
     IonToolbar,
     IonCol,
     IonGrid,
     IonRow,
+    FormsModule
   ],
 })
 export class DashboardPage implements OnInit {
-
-  constructor(private http: HttpClient) {}
+  message =
+    'This modal example uses the modalController to present and dismiss modals.';
+  constructor(private http: HttpClient, private modalCtrl: ModalController) {}
   public itemsDashboard: any[] = [];
   ngOnInit() {
-    this.loadDashboard();
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.loadDashboard();
+    }
   }
 
   loadDashboard() {
@@ -47,5 +53,20 @@ export class DashboardPage implements OnInit {
         console.error('Error loading dashboard data:', error);
       }
     );
+  }
+
+  async openModal() {
+    const modal = await this.modalCtrl.create({
+      component: FormInsertPage,
+    });
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+
+    if (role === 'confirm' && data) {
+      this.message = `Se ha agregado la tarea: ${data.title}`;
+      // Recargar la lista de tareas
+      this.loadDashboard();
+    }
   }
 }
