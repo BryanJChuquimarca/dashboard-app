@@ -10,24 +10,35 @@ dashboard.page.ts:42
 dashboard.page.ts:56 Error loading dashboard data: 
 HttpErrorResponse {headers: _HttpHeaders, status: 401, statusText: 'Unauthorized', url: 'http://localhost:3000/api/dashboard', ok: false, …}
 // y cuando inicio secion me carga la tocken y se guarda en local pero no me carga el dashboard y tengo que recargar la pagina otra vez para que salga */
-import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpInterceptorFn,
+  HttpRequest,
+  HttpHandlerFn,
+  HttpEvent,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
-export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
+export const authInterceptor: HttpInterceptorFn = (
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn,
+): Observable<HttpEvent<unknown>> => {
   const router = inject(Router);
   let authReq = req;
 
   if (!authReq.url.startsWith('http')) {
     authReq = authReq.clone({
-      url: `${environment.apiUrl}${authReq.url}`, 
+      url: `${environment.apiUrl}${authReq.url}`,
     });
   }
 
-  const isAuthEndpoint = authReq.url.includes('/api/auth/login') || authReq.url.includes('/api/auth/register');
+  const isAuthEndpoint =
+    authReq.url.includes('/api/auth/login') ||
+    authReq.url.includes('/api/auth/register');
 
   if (!isAuthEndpoint) {
     const token = localStorage.getItem('token');
@@ -37,18 +48,18 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
       });
     }
   }
-  
+
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401 || error.status === 403) {
         localStorage.removeItem('token');
-        
+
         const currentUrl = router.url;
         if (!isAuthEndpoint && currentUrl !== '/login') {
           router.navigate(['/login']);
         }
       }
       return throwError(() => error);
-    })
+    }),
   );
 };

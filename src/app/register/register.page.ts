@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
+import { ToastrService } from 'ngx-toastr';
+import { inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonContent } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
@@ -13,7 +14,11 @@ import { environment } from '../../environments/environment';
   imports: [IonContent, FormsModule],
 })
 export class RegisterPage implements OnInit {
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {}
+  toastr = inject(ToastrService);
 
   public user: any = {
     name: '',
@@ -29,20 +34,25 @@ export class RegisterPage implements OnInit {
 
     if (this.user.password !== this.user.password_confirm) {
       console.error('Las contraseñas no coinciden');
-      alert("Las contraseñas no coinciden"); //cambiar alert por un modal bonito
+      this.toastr.error('Las contraseñas no coinciden', 'Error');
       return;
     }
 
     this.http
       .post(`${environment.apiUrl}/api/auth/register`, this.user)
-      .subscribe((response: any) => {
-        console.log(response);
-        this.router.navigate(['/login']);
-      },
-      error => {
-        console.error('Error en el registro:', error);
-        alert("Error en el registro: " + error.error.message); //cambiar alert por un modal bonito
-      }
-    );
+      .subscribe(
+        (response: any) => {
+          console.log(response);
+          this.toastr.success(
+            'Registro exitoso. Por favor, inicia sesión.',
+            'Éxito',
+          );
+          this.router.navigate(['/login']);
+        },
+        (error) => {
+          console.error('Error en el registro:', error);
+          this.toastr.error('Error en el registro: ', 'Error');
+        },
+      );
   }
 }

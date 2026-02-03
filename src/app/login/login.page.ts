@@ -5,6 +5,8 @@ import { IonContent } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { ToastrService } from 'ngx-toastr';
+import { inject } from '@angular/core';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -13,12 +15,16 @@ import { environment } from '../../environments/environment';
   imports: [IonContent, FormsModule],
 })
 export class LoginPage implements OnInit {
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {}
 
   public user: any = {
     email: '',
     password: '',
   };
+  toastr = inject(ToastrService);
 
   ngOnInit() {}
 
@@ -27,16 +33,15 @@ export class LoginPage implements OnInit {
       (response: any) => {
         console.log(response);
         localStorage.setItem('token', response.token);
-        
-        // Navegar después de un pequeño delay para asegurar que el token se guardó
+
         setTimeout(() => {
           this.router.navigate(['/dashboard']);
         }, 100);
       },
       (error) => {
         console.error('Error en el login:', error);
-        alert('Error en el login: ' + error.error.message); //cambiar alert por un modal bonito
-      }
+        this.toastr.error('Error en el login: ' + error.error.message);
+      },
     );
   }
   onRegisterRedirect() {

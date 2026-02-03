@@ -10,12 +10,12 @@ function isTokenValid(): boolean {
     const payload = JSON.parse(atob(payloadBase64));
 
     const now = Math.floor(Date.now() / 1000);
-    
+
     if (payload.exp <= now) {
       localStorage.removeItem('token');
       return false;
     }
-    
+
     return true;
   } catch (e) {
     localStorage.removeItem('token');
@@ -77,6 +77,7 @@ export const routes: Routes = [
   },
   {
     path: 'form-insert',
-    loadComponent: () => import('./form-insert/form-insert.page').then( m => m.FormInsertPage)
+    loadComponent: () =>
+      import('./form-insert/form-insert.page').then((m) => m.FormInsertPage),
   },
 ];

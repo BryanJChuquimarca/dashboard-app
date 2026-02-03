@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { inject } from '@angular/core';
 import {
   IonContent,
   IonButton,
@@ -12,6 +14,7 @@ import {
   IonCardContent,
   IonBadge,
   ModalController,
+  AlertController,
 } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { FormInsertPage } from '../form-insert/form-insert.page';
@@ -26,6 +29,14 @@ import {
   funnelOutline,
   swapVerticalOutline,
   barChartOutline,
+  timeOutline,
+  flagOutline,
+  syncOutline,
+  checkmarkOutline,
+  saveOutline,
+  closeOutline,
+  textOutline,
+  documentTextOutline,
 } from 'ionicons/icons';
 import {
   CdkDrag,
@@ -66,7 +77,7 @@ export class DashboardPage implements OnInit {
   public itemImportant: any[] = [];
   public highlightedTaskId: string | null = null;
   private readonly ACTIVITY_STORAGE_KEY = 'dashboard_activity_log';
-
+  toastr = inject(ToastrService);
   statusChartData = {
     labels: ['Completada', 'En Progreso', 'Pendiente'],
     datasets: [
@@ -162,9 +173,18 @@ export class DashboardPage implements OnInit {
   constructor(
     private http: HttpClient,
     private modalCtrl: ModalController,
+    private alertCtrl: AlertController,
     private router: Router,
   ) {
     addIcons({
+      documentTextOutline,
+      textOutline,
+      closeOutline,
+      saveOutline,
+      checkmarkOutline,
+      syncOutline,
+      flagOutline,
+      timeOutline,
       listOutline,
       logOutOutline,
       addCircleOutline,
@@ -215,7 +235,6 @@ export class DashboardPage implements OnInit {
         },
       ],
     };
-    console.log('Chart data updated:', this.statusChartData.datasets[0].data);
   }
 
   updateActivityChart() {
@@ -283,6 +302,10 @@ export class DashboardPage implements OnInit {
       },
       (error) => {
         console.error('Error loading dashboard data:', error);
+        this.toastr.error(
+          'ha ocurrido un error al cargar el dashboard',
+          'Error',
+        );
       },
     );
   }
@@ -319,29 +342,43 @@ export class DashboardPage implements OnInit {
     }
   }
 
-  deleteItem(id: number) {
-    if (confirm('¿Estás seguro de eliminar esta tarea?')) {
-      this.http.delete(`${environment.apiUrl}/api/dashboard/${id}`).subscribe(
-        (response: any) => {
-          console.log('Tarea eliminada:', response);
-          this.logActivity('delete');
-          this.loadDashboard();
+  async deleteItem(id: number) {
+    const alert = await this.alertCtrl.create({
+      header: 'Confirmar eliminación',
+      message: '¿Estás seguro de eliminar esta tarea?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'alert-button-cancel',
         },
-        (error) => {
-          console.error('Error al eliminar:', error);
-          alert(
-            'Error al eliminar: ' + (error.error?.message || error.message),
-          );
+        {
+          text: 'Eliminar',
+          role: 'confirm',
+          cssClass: 'alert-button-confirm',
+          handler: () => {
+            this.http
+              .delete(`${environment.apiUrl}/api/dashboard/${id}`)
+              .subscribe(
+                (response: any) => {
+                  this.logActivity('delete');
+                  this.loadDashboard();
+                  this.toastr.success('¡Tarea eliminada con éxito!', 'Éxito');
+                },
+                (error) => {
+                  console.error('Error al eliminar:', error);
+                  this.toastr.error(
+                    'Error al eliminar!',
+                    error.error?.message || error.message,
+                  );
+                },
+              );
+          },
         },
-      );
-    }
-  }
+      ],
+    });
 
-  logout() {
-    if (confirm('¿Seguro que deseas cerrar sesión?')) {
-      localStorage.removeItem('token');
-      this.router.navigate(['/login']);
-    }
+    await alert.present();
   }
 
   getStatusColor(status: string): string {
@@ -375,9 +412,14 @@ export class DashboardPage implements OnInit {
       (response: any) => {
         console.log('Dashboard data:', response);
         this.itemImportant = response;
+        this.toastr.info('¡Tareas importantes cargadas!', 'Info');
       },
       (error) => {
         console.error('Error loading dashboard data:', error);
+        this.toastr.error(
+          'No se ha podido solicitar a la ia las tareas',
+          'Error',
+        );
       },
     );
   }
@@ -444,5 +486,10 @@ export class DashboardPage implements OnInit {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  filterItems() {
+    // filtro primero por estado luego por titulo, fecha.
+    // Implementar la lógica de filtrado aquí
   }
 }

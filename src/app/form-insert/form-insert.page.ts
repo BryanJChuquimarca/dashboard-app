@@ -18,16 +18,17 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { addIcons } from 'ionicons';
-import { 
-  closeOutline, 
-  checkmarkOutline, 
+import {
+  closeOutline,
+  checkmarkOutline,
   textOutline,
   documentTextOutline,
   flagOutline,
   addCircleOutline,
-  saveOutline
+  saveOutline,
 } from 'ionicons/icons';
-
+import { ToastrService } from 'ngx-toastr';
+import { inject } from '@angular/core';
 @Component({
   selector: 'app-form-insert',
   templateUrl: './form-insert.page.html',
@@ -46,8 +47,8 @@ import {
     IonSelect,
     IonSelectOption,
     IonIcon,
-    IonTextarea
-],
+    IonTextarea,
+  ],
 })
 export class FormInsertPage implements OnInit {
   title: string = '';
@@ -55,19 +56,20 @@ export class FormInsertPage implements OnInit {
   status: string = 'pending';
   item: any = null;
   isEditMode: boolean = false;
+  toastr = inject(ToastrService);
 
   constructor(
     private modalCtrl: ModalController,
     private http: HttpClient,
   ) {
-    addIcons({ 
-      closeOutline, 
-      checkmarkOutline, 
+    addIcons({
+      closeOutline,
+      checkmarkOutline,
       textOutline,
       documentTextOutline,
       flagOutline,
       addCircleOutline,
-      saveOutline
+      saveOutline,
     });
   }
 
@@ -85,7 +87,7 @@ export class FormInsertPage implements OnInit {
 
   confirm() {
     if (!this.title.trim()) {
-      alert('El título es obligatorio');
+      this.toastr.warning('El título es obligatorio', 'Falta Título');
       return;
     }
 
@@ -96,27 +98,41 @@ export class FormInsertPage implements OnInit {
     };
 
     if (this.isEditMode && this.item) {
-      this.http.patch(`${environment.apiUrl}/api/dashboard/${this.item.id}`, taskData).subscribe(
-        (response: any) => {
-          console.log('Tarea actualizada:', response);
-          return this.modalCtrl.dismiss(response, 'confirm');
-        },
-        (error) => {
-          console.error('Error al actualizar tarea:', error);
-          alert('Error al actualizar: ' + (error.error?.message || error.message));
-        }
-      );
+      this.http
+        .patch(`${environment.apiUrl}/api/dashboard/${this.item.id}`, taskData)
+        .subscribe(
+          (response: any) => {
+            console.log('Tarea actualizada:', response);
+            this.toastr.info(
+              'Se ha actualizado la tarea correctamente',
+              'Tarea Actualizada',
+            );
+            return this.modalCtrl.dismiss(response, 'confirm');
+          },
+          (error) => {
+            console.error('Error al actualizar tarea:', error);
+            this.toastr.error(
+              'Error al actualizar: ' + (error.error?.message || error.message),
+            );
+          },
+        );
     } else {
       this.http.post(`${environment.apiUrl}/api/dashboard`, taskData).subscribe(
         (response: any) => {
           console.log('Tarea creada:', response);
+          this.toastr.success(
+            'Se ha creado la tarea correctamente',
+            'Tarea Creada',
+          );
           return this.modalCtrl.dismiss(response, 'confirm');
-          
         },
         (error) => {
           console.error('Error al crear tarea:', error);
-          alert('Error al crear la tarea: ' + (error.error?.message || error.message));
-        }
+          this.toastr.error(
+            'Error al crear la tarea: ' +
+              (error.error?.message || error.message),
+          );
+        },
       );
     }
   }
