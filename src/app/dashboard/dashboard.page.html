@@ -1,54 +1,126 @@
-
 <ion-content>
-  <div class="container">
-    <div class="header-section">
-      <h1>Bienvenido a tu Dashboard</h1>
-      <p class="subtitle">Organiza y gestiona tus tareas de forma eficiente</p>
-      <ion-button expand="block" class="add-button" (click)="openModal()">
-        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-        Nueva Tarea
-      </ion-button>
+  <div class="dashboard-grid">
+    <div class="sidebar-left">
+      <div class="control-panel">
+        <ion-button expand="block" size="small" fill="outline">
+          <ion-icon name="funnel-outline" slot="start"></ion-icon>
+          Filtrar
+        </ion-button>
+        <ion-button expand="block" size="small" fill="outline">
+          <ion-icon name="swap-vertical-outline" slot="start"></ion-icon>
+          Ordenar
+        </ion-button>
+      </div>
+
+      @if (itemImportant.length > 0) {
+      <h3 class="important-tasks-title">Tareas Importantes</h3>
+      @for (itemImportant of itemImportant; track itemImportant.id){
+      <div class="task-card" (click)="highlightTask(itemImportant.id)">
+        <ion-card-header>
+          <div class="card-header-content">
+            <ion-badge [color]="getStatusColor(itemImportant.status)">
+              {{ getStatusLabel(itemImportant.status) }}
+            </ion-badge>
+            <ion-card-title>{{ itemImportant.title }}</ion-card-title>
+          </div>
+        </ion-card-header>
+      </div>
+      } }
     </div>
 
-    @if (itemsDashboard.length === 0) {
+    <div class="main-content">
+      <div class="header-section">
+        <h1>Bienvenido a tu Dashboard</h1>
+        <p class="subtitle">
+          Organiza y gestiona tus tareas de forma eficiente
+        </p>
+        <ion-button expand="block" class="add-button" (click)="openModal()">
+          <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+          Nueva Tarea
+        </ion-button>
+      </div>
+
+      @if (itemsDashboard.length === 0) {
       <div class="empty-state">
         <ion-icon name="clipboard-outline"></ion-icon>
         <h2>No hay tareas aún</h2>
         <p>Comienza creando tu primera tarea</p>
       </div>
-    }
-
-    <!-- Tasks List -->
-    @if (itemsDashboard.length > 0) {
-      <div class="tasks-container" cdkDropList (cdkDropListDropped)="drop($event)">
+      } @if (itemsDashboard.length > 0) {
+      <div
+        class="tasks-container"
+        cdkDropList
+        (cdkDropListDropped)="drop($event)"
+      >
         @for (item of itemsDashboard; track item.id) {
-          <ion-card class="task-card" [class.completed]="item.status === 'completed'" cdkDrag>
-            <ion-card-header>
-              <div class="card-header-content">
-                <ion-card-title>{{ item.title }}</ion-card-title>
-                <ion-badge [color]="getStatusColor(item.status)">
-                  {{ getStatusLabel(item.status) }}
-                </ion-badge>
-              </div>
-            </ion-card-header>
-            
-            <ion-card-content>
-              <p class="description">{{ item.description || 'Sin descripción' }}</p>
-              
-              <div class="actions">
-                <ion-button fill="outline" size="small" (click)="openEditModal(item)">
-                  <ion-icon name="create-outline" slot="start"></ion-icon>
-                  Editar
-                </ion-button>
-                <ion-button fill="outline" size="small" color="danger" (click)="deleteItem(item.id)">
-                  <ion-icon name="trash-outline" slot="start"></ion-icon>
-                  Eliminar
-                </ion-button>
-              </div>
-            </ion-card-content>
-          </ion-card>
+        <ion-card
+          [id]="'task-' + item.id"
+          class="task-card"
+          [class.completed]="item.status === 'completed'"
+          [class.highlighted]="highlightedTaskId === item.id"
+          cdkDrag
+        >
+          <ion-card-header>
+            <div class="card-header-content">
+              <ion-card-title>{{ item.title }}</ion-card-title>
+              <ion-badge [color]="getStatusColor(item.status)">
+                {{ getStatusLabel(item.status) }}
+              </ion-badge>
+            </div>
+          </ion-card-header>
+
+          <ion-card-content>
+            <p class="description">
+              {{ item.description || 'Sin descripción' }}
+            </p>
+
+            <div class="actions">
+              <ion-button
+                fill="outline"
+                size="small"
+                (click)="openEditModal(item)"
+              >
+                <ion-icon name="create-outline" slot="start"></ion-icon>
+                Editar
+              </ion-button>
+              <ion-button
+                fill="outline"
+                size="small"
+                color="danger"
+                (click)="deleteItem(item.id)"
+              >
+                <ion-icon name="trash-outline" slot="start"></ion-icon>
+                Eliminar
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
         }
       </div>
-    }
+      }
+    </div>
+
+    <div class="sidebar-right">
+      @if (itemsDashboard.length > 0) {
+      <div class="chart-container">
+        <canvas
+          baseChart
+          [data]="statusChartData"
+          [options]="statusChartOptions"
+          [type]="'pie'"
+        >
+        </canvas>
+      </div>
+      <div class="chart-container activity-chart-container">
+        <canvas
+          baseChart
+          [data]="statusChartData1"
+          [options]="statusChartOptions1"
+          [type]="'line'"
+        >
+        </canvas>
+      </div>
+      }
+    </div>
   </div>
 </ion-content>

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-
 import { FormsModule } from '@angular/forms';
 import {
   IonContent,
@@ -112,6 +111,7 @@ export class FormInsertPage implements OnInit {
         (response: any) => {
           console.log('Tarea creada:', response);
           return this.modalCtrl.dismiss(response, 'confirm');
+          
         },
         (error) => {
           console.error('Error al crear tarea:', error);

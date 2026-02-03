@@ -21,17 +21,14 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
   const router = inject(Router);
   let authReq = req;
 
-  // Normalizar la URL si es relativa
   if (!authReq.url.startsWith('http')) {
     authReq = authReq.clone({
       url: `${environment.apiUrl}${authReq.url}`, 
     });
   }
 
-  // Verificar si es un endpoint de autenticación
   const isAuthEndpoint = authReq.url.includes('/api/auth/login') || authReq.url.includes('/api/auth/register');
 
-  // Solo agregar token si NO es endpoint de autenticación
   if (!isAuthEndpoint) {
     const token = localStorage.getItem('token');
     if (token) {
@@ -43,11 +40,9 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
   
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      // Manejar tanto 401 (Unauthorized) como 403 (Invalid token)
       if (error.status === 401 || error.status === 403) {
         localStorage.removeItem('token');
         
-        // Solo navegar al login si no estamos ya en un endpoint de autenticación
         const currentUrl = router.url;
         if (!isAuthEndpoint && currentUrl !== '/login') {
           router.navigate(['/login']);
