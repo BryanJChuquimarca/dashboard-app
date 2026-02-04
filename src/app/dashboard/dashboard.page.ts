@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { inject } from '@angular/core';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import {
   IonContent,
   IonButton,
@@ -15,11 +17,16 @@ import {
   IonBadge,
   ModalController,
   AlertController,
+  IonFab,
+  IonFabButton,
+  IonFabList,
 } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { FormInsertPage } from '../form-insert/form-insert.page';
 import { addIcons } from 'ionicons';
 import {
+  alertCircleOutline,
+  downloadOutline,
   listOutline,
   logOutOutline,
   addCircleOutline,
@@ -70,10 +77,14 @@ interface ActivityLog {
     CdkDropList,
     CdkDrag,
     NgChartsModule,
+    IonFab,
+    IonFabButton,
+    IonFabList,
   ],
 })
 export class DashboardPage implements OnInit {
   public itemsDashboard: any[] = [];
+  public showDownloadMenu = false;
   public itemImportant: any[] = [];
   public highlightedTaskId: string | null = null;
   private readonly ACTIVITY_STORAGE_KEY = 'dashboard_activity_log';
@@ -177,6 +188,8 @@ export class DashboardPage implements OnInit {
     private router: Router,
   ) {
     addIcons({
+      alertCircleOutline,
+      downloadOutline,
       documentTextOutline,
       textOutline,
       closeOutline,
@@ -295,7 +308,6 @@ export class DashboardPage implements OnInit {
       (response: any) => {
         console.log('Dashboard data:', response);
         this.itemsDashboard = response;
-        this.getItemImportant();
         this.updateStatusChart();
         this.updateActivityChart();
         console.log('Dashboard and chart updated');
@@ -488,8 +500,41 @@ export class DashboardPage implements OnInit {
     return `${year}-${month}-${day}`;
   }
 
-  filterItems() {
-    // filtro primero por estado luego por titulo, fecha.
-    // Implementar la lógica de filtrado aquí
+  filterItems() {}
+
+  downloadItem(
+    tipo: 'todas' | 'completed' | 'pending' | 'individual' | 'in-progress',
+    tarea?: any,
+  ) {
+    const doc = new jsPDF();
+    let datosParaExportar = this.itemsDashboard;
+    let titulo = '';
+
+    let date = new Date();
+    if (tipo === 'todas') {
+      datosParaExportar = this.itemsDashboard;
+      titulo = `Reporte_Total_Tareas_${date.toISOString().split('T')[0]}`;
+    } else {
+      datosParaExportar = this.itemsDashboard.filter((t) => t.status === tipo);
+      titulo = `Tareas_${tipo}_${date.toISOString().split('T')[0]}`;
+    }
+    doc.text(titulo.replace('_', ' '), 14, 15);
+
+    autoTable(doc, {
+      startY: 25,
+      head: [['ID', 'Título', 'Descripción', 'Estado', 'Fecha']],
+      body: datosParaExportar.map((t) => [
+        t.id,
+        t.title,
+        t.description,
+        t.status,
+        t.created_at.split('T')[0],
+      ]),
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [66, 133, 244] },
+    });
+
+    doc.save(`${titulo}.pdf`);
+    this.toastr.success('¡Descarga completada!', 'Éxito');
   }
 }

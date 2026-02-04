@@ -2,19 +2,53 @@
   <div class="dashboard-grid">
     <div class="sidebar-left">
       <div class="control-panel">
-        <ion-button expand="block" size="small" fill="outline">
+        <ion-button
+          expand="block"
+          size="small"
+          fill="outline"
+          (click)="filterItems()"
+        >
           <ion-icon name="funnel-outline" slot="start"></ion-icon>
           Filtrar
         </ion-button>
-        <ion-button expand="block" size="small" fill="outline">
-          <ion-icon name="swap-vertical-outline" slot="start"></ion-icon>
-          Ordenar
-        </ion-button>
       </div>
 
-      @if (itemImportant.length > 0) {
-      <h3 class="important-tasks-title">Tareas Importantes</h3>
-      @for (itemImportant of itemImportant; track itemImportant.id){
+      @if (itemsDashboard.length > 0) {
+      <ion-fab horizontal="start" vertical="top" slot="fixed">
+        <ion-fab-button> Descargar Tareas </ion-fab-button>
+        <ion-fab-list side="bottom">
+          <ion-fab-button
+            (click)="this.downloadItem('completed', itemsDashboard)"
+          >
+            Completados
+          </ion-fab-button>
+          <ion-fab-button
+            (click)="this.downloadItem('in-progress', itemsDashboard)"
+          >
+            En progreso
+          </ion-fab-button>
+          <ion-fab-button (click)="this.downloadItem('pending', itemsDashboard)"
+            >Pendientes
+          </ion-fab-button>
+          <ion-fab-button (click)="this.downloadItem('todas', itemsDashboard)"
+            >Todas
+          </ion-fab-button>
+        </ion-fab-list> </ion-fab
+      >} @if (itemImportant.length === 0) {
+      <!--boton para llamar a funcion y generar tareas-->
+      <div class="control-panel important">
+        <ion-button
+          expand="block"
+          size="large"
+          fill="solid"
+          class="important-btn"
+          (click)="getItemImportant()"
+        >
+          <span class="important-btn-text">Generar Tareas Importantes</span>
+        </ion-button>
+      </div>
+      } @if (itemImportant.length > 0) { @for (itemImportant of itemImportant;
+      track itemImportant.id){
       <div class="task-card" (click)="highlightTask(itemImportant.id)">
         <ion-card-header>
           <div class="card-header-content">

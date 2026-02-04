@@ -26,7 +26,6 @@ ion-content {
   padding: 20px;
   border: 1px solid #2d3748;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-
   h3 {
     color: #ffffff;
     font-size: 1.1rem;
@@ -35,7 +34,7 @@ ion-content {
   }
 
   ion-button {
-    margin-bottom: 10px;
+    margin: 0;
     --border-color: #667eea;
     --color: #ffffff;
     font-size: 0.9rem;
@@ -323,8 +322,8 @@ ion-content {
 
     ion-button {
       flex: 1;
+      border-radius: 10px;
       --border-radius: 10px;
-      --color: #ffffff;
       font-weight: 500;
 
       &::part(native) {
@@ -414,4 +413,32 @@ ion-header {
   50% {
     transform: scale(1.02);
   }
+}
+
+.important-btn-text {
+  font-size: 0.9rem;
+}
+
+.important-btn {
+  --background: transparent;
+  border: 2px solid #764ba2;
+  border-radius: 20px;
+  height: auto;
+}
+
+ion-fab-button {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --background-activated: #87d361;
+  --background-hover: #a3e681;
+  --border-radius: 20px;
+  width: 180px;
+  margin: 10px;
+  font-size: 0.9rem;
+  --box-shadow:
+    0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --color: black;
+}
+
+ion-fab-list {
+  margin-top: 70px;
 }

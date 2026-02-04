@@ -30,6 +30,8 @@
     "@ionic/angular": "^8.0.0",
     "chart.js": "^4.5.1",
     "ionicons": "^7.0.0",
+    "jspdf": "^4.1.0",
+    "jspdf-autotable": "^5.0.7",
     "ng2-charts": "^4.1.1",
     "ngx-toastr": "^17.0.0",
     "rxjs": "~7.8.0",
