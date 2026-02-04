@@ -6,8 +6,6 @@ import {
   IonMenu,
   IonContent,
   IonList,
-  IonListHeader,
-  IonNote,
   IonMenuToggle,
   IonItem,
   IonIcon,
@@ -23,20 +21,10 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
-  mailOutline,
-  mailSharp,
-  paperPlaneOutline,
-  paperPlaneSharp,
-  heartOutline,
-  heartSharp,
-  archiveOutline,
-  archiveSharp,
-  trashOutline,
-  trashSharp,
-  warningOutline,
-  warningSharp,
-  bookmarkOutline,
-  bookmarkSharp,
+  homeOutline,
+  homeSharp,
+  personSharp,
+  personOutline,
   logOutOutline,
 } from 'ionicons/icons';
 import { Router } from '@angular/router';
@@ -54,8 +42,6 @@ import { Router } from '@angular/router';
     IonMenu,
     IonContent,
     IonList,
-    IonListHeader,
-    IonNote,
     IonMenuToggle,
     IonItem,
     IonIcon,
@@ -70,33 +56,21 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
   public appPages = [
-    { title: 'Inbox', url: '/login', icon: 'mail' },
-    { title: 'Outbox', url: '/dashboard', icon: 'paper-plane' },
-    { title: 'Favorites', url: '/profile', icon: 'heart' },
-    { title: 'Archived', url: '/register', icon: 'archive' },
+    { title: 'Dashboard', url: '/dashboard', icon: 'home' },
+    { title: 'Perfil', url: '/profile', icon: 'person' },
   ];
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
   public showMenu = true;
+
   constructor(
     private router: Router,
     private alertCtrl: AlertController,
   ) {
     addIcons({
+      homeOutline,
+      homeSharp,
+      personSharp,
+      personOutline,
       logOutOutline,
-      mailOutline,
-      mailSharp,
-      paperPlaneOutline,
-      paperPlaneSharp,
-      heartOutline,
-      heartSharp,
-      archiveOutline,
-      archiveSharp,
-      trashOutline,
-      trashSharp,
-      warningOutline,
-      warningSharp,
-      bookmarkOutline,
-      bookmarkSharp,
     });
     this.router.events.subscribe(() => {
       const currentUrl = this.router.url;
@@ -129,5 +103,11 @@ export class AppComponent {
     });
 
     await alert.present();
+  }
+  goToprofile() {
+    this.router.navigate(['/profile']);
+  }
+  goToHome() {
+    this.router.navigate(['/dashboard']);
   }
 }

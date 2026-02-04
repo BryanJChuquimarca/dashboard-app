@@ -1,0 +1,60 @@
+<div class="logo-editor-modal">
+  <div class="modal-header">
+    <h2>Personaliza tu Logo</h2>
+    <p class="subtitle">Arrastra los puntos para crear tu diseño único</p>
+  </div>
+
+  <div class="svg-editor" #svgContainer>
+    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      <polygon
+        id="edit-star"
+        [attr.points]="getPointsString()"
+        stroke="#667eea"
+        stroke-width="8"
+        stroke-linejoin="round"
+        fill="rgba(102, 126, 234, 0.2)"
+        filter="url(#glow)"
+      />
+
+      @for (point of points; track $index) {
+        <circle
+          class="point-handle"
+          [attr.cx]="point.x"
+          [attr.cy]="point.y"
+          r="8"
+          fill="#ffffff"
+          stroke="#667eea"
+          stroke-width="3"
+          style="cursor: move"
+        />
+      }
+    </svg>
+  </div>
+
+  <div class="modal-actions">
+    <ion-button expand="block" fill="outline" (click)="resetLogo()">
+      <ion-icon name="refresh-outline" slot="start"></ion-icon>
+      Restablecer
+    </ion-button>
+
+    <ion-button expand="block" fill="outline" (click)="close()">
+      <ion-icon name="close-outline" slot="start"></ion-icon>
+      Cancelar
+    </ion-button>
+
+    <ion-button expand="block" (click)="saveLogo()" class="save-btn">
+      <ion-icon name="save-outline" slot="start"></ion-icon>
+      Guardar Logo
+    </ion-button>
+  </div>
+</div>

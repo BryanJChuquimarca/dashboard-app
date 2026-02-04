@@ -5,7 +5,6 @@ import { environment } from '../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
 import { addIcons } from 'ionicons';
 import {
-  personCircleOutline,
   personOutline,
   mailOutline,
   calendarOutline,
@@ -25,7 +24,9 @@ import {
   IonIcon,
   IonInput,
   IonButton,
+  ModalController,
 } from '@ionic/angular/standalone';
+import { LogoEditorComponent } from '../logo-editor/logo-editor.component';
 
 interface ActivityLog {
   date: string;
@@ -43,9 +44,11 @@ interface ActivityLog {
 export class ProfilePage implements OnInit {
   private http = inject(HttpClient);
   private toastr = inject(ToastrService);
-  userData: any = {};
+  private modalCtrl = inject(ModalController);
 
+  userData: any = {};
   editName: string = '';
+  customLogoPoints: string = '';
 
   stats = {
     total: 0,
@@ -62,7 +65,6 @@ export class ProfilePage implements OnInit {
 
   constructor() {
     addIcons({
-      personCircleOutline,
       personOutline,
       mailOutline,
       calendarOutline,
@@ -83,6 +85,36 @@ export class ProfilePage implements OnInit {
     this.loadUserData();
     this.loadTaskStats();
     this.loadActivityStats();
+    this.loadCustomLogo();
+  }
+
+  loadCustomLogo() {
+    const savedPoints = localStorage.getItem('customLogo');
+    if (savedPoints) {
+      const points = JSON.parse(savedPoints);
+      this.customLogoPoints = points
+        .map((p: any) => `${p.x.toFixed(2)},${p.y.toFixed(2)}`)
+        .join(' ');
+    }
+  }
+
+  async openLogoEditor() {
+    const modal = await this.modalCtrl.create({
+      component: LogoEditorComponent,
+      cssClass: 'logo-editor-modal',
+    });
+
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    if (data?.saved) {
+      this.loadCustomLogo();
+      this.toastr.success('Logo personalizado guardado');
+    }
+  }
+
+  hasCustomLogo(): boolean {
+    return this.customLogoPoints !== '';
   }
 
   loadUserData() {

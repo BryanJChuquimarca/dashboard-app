@@ -26,6 +26,9 @@ import {
   flagOutline,
   addCircleOutline,
   saveOutline,
+  timeOutline,
+  syncOutline,
+  checkmarkCircleOutline,
 } from 'ionicons/icons';
 import { ToastrService } from 'ngx-toastr';
 import { inject } from '@angular/core';
@@ -70,6 +73,9 @@ export class FormInsertPage implements OnInit {
       flagOutline,
       addCircleOutline,
       saveOutline,
+      timeOutline,
+      syncOutline,
+      checkmarkCircleOutline,
     });
   }
 

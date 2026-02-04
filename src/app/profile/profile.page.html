@@ -2,8 +2,27 @@
   <div class="profile-container">
     <div class="profile-card user-info-card">
       <div class="avatar-section">
-        <div class="avatar-circle">
+        <div class="avatar-circle" (click)="openLogoEditor()">
+          @if (hasCustomLogo()) {
+          <svg
+            viewBox="0 0 400 400"
+            xmlns="http://www.w3.org/2000/svg"
+            class="custom-logo"
+          >
+            <polygon
+              [attr.points]="customLogoPoints"
+              stroke="#ffffff"
+              stroke-width="8"
+              stroke-linejoin="round"
+              fill="rgba(255, 255, 255, 0.2)"
+            />
+          </svg>
+          } @else {
           <ion-icon name="person-outline"></ion-icon>
+          }
+          <div class="edit-overlay">
+            <ion-icon name="create-outline"></ion-icon>
+          </div>
         </div>
       </div>
 

@@ -25,25 +25,11 @@ import { FormsModule } from '@angular/forms';
 import { FormInsertPage } from '../form-insert/form-insert.page';
 import { addIcons } from 'ionicons';
 import {
-  alertCircleOutline,
-  downloadOutline,
-  listOutline,
-  logOutOutline,
   addCircleOutline,
   clipboardOutline,
   createOutline,
   trashOutline,
   funnelOutline,
-  swapVerticalOutline,
-  barChartOutline,
-  timeOutline,
-  flagOutline,
-  syncOutline,
-  checkmarkOutline,
-  saveOutline,
-  closeOutline,
-  textOutline,
-  documentTextOutline,
 } from 'ionicons/icons';
 import {
   CdkDrag,
@@ -197,25 +183,11 @@ export class DashboardPage implements OnInit {
     private router: Router,
   ) {
     addIcons({
-      alertCircleOutline,
-      downloadOutline,
-      documentTextOutline,
-      textOutline,
-      closeOutline,
-      saveOutline,
-      checkmarkOutline,
-      syncOutline,
-      flagOutline,
-      timeOutline,
-      listOutline,
-      logOutOutline,
       addCircleOutline,
       clipboardOutline,
       createOutline,
       trashOutline,
       funnelOutline,
-      swapVerticalOutline,
-      barChartOutline,
     });
   }
 

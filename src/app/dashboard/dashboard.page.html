@@ -13,28 +13,7 @@
         </ion-button>
       </div>
 
-      @if (itemsDashboard.length > 0) {
-      <ion-fab horizontal="start" vertical="top" slot="fixed">
-        <ion-fab-button> Descargar Tareas </ion-fab-button>
-        <ion-fab-list side="bottom">
-          <ion-fab-button
-            (click)="this.downloadItem('completed', itemsDashboard)"
-          >
-            Completados
-          </ion-fab-button>
-          <ion-fab-button
-            (click)="this.downloadItem('in-progress', itemsDashboard)"
-          >
-            En progreso
-          </ion-fab-button>
-          <ion-fab-button (click)="this.downloadItem('pending', itemsDashboard)"
-            >Pendientes
-          </ion-fab-button>
-          <ion-fab-button (click)="this.downloadItem('todas', itemsDashboard)"
-            >Todas
-          </ion-fab-button>
-        </ion-fab-list> </ion-fab
-      >} @if (itemImportant.length === 0) {
+      @if (itemImportant.length === 0) {
       <!--boton para llamar a funcion y generar tareas-->
       <div class="control-panel important">
         <ion-button
@@ -154,6 +133,29 @@
         >
         </canvas>
       </div>
+      <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+        <ion-fab-button> Descargar Tareas </ion-fab-button>
+        <ion-fab-list side="top">
+          <ion-fab-button
+            (click)="this.downloadItem('todas', itemsDashboard)"
+          >
+            Todas
+          </ion-fab-button>
+          <ion-fab-button
+            (click)="this.downloadItem('completed', itemsDashboard)"
+          >
+            Completados
+          </ion-fab-button>
+          <ion-fab-button
+            (click)="this.downloadItem('in-progress', itemsDashboard)"
+          >
+            En progreso
+          </ion-fab-button>
+          <ion-fab-button (click)="this.downloadItem('pending', itemsDashboard)"
+            >Pendientes
+          </ion-fab-button>
+        </ion-fab-list>
+      </ion-fab>
       }
     </div>
   </div>

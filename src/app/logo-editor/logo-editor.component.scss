@@ -1,0 +1,110 @@
+.logo-editor-modal {
+  background: #0f1419;
+  padding: 30px;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.modal-header {
+  text-align: center;
+
+  h2 {
+    color: #ffffff;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    color: #a0aec0;
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+.svg-editor {
+  background: #1a1f2e;
+  border-radius: 16px;
+  padding: 30px;
+  border: 1px solid #2d3748;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    max-width: 100%;
+    width: 400px;
+    height: 400px;
+    filter: drop-shadow(0 4px 12px rgba(102, 126, 234, 0.3));
+  }
+
+  .point-handle {
+    transition: all 0.2s ease;
+
+    &:hover {
+      r: 10;
+      fill: #667eea;
+      stroke: #ffffff;
+      filter: drop-shadow(0 2px 8px rgba(102, 126, 234, 0.6));
+    }
+
+    &:active {
+      fill: #764ba2;
+    }
+  }
+}
+
+.modal-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: auto;
+
+  ion-button {
+    --border-radius: 12px;
+    font-weight: 600;
+    height: 48px;
+
+    &.save-btn {
+      --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --color: #ffffff;
+      grid-column: 1 / -1;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      }
+    }
+
+    &[fill="outline"] {
+      --border-color: #667eea;
+      --color: #667eea;
+
+      &:hover {
+        --background: rgba(102, 126, 234, 0.1);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-editor-modal {
+    padding: 20px;
+  }
+
+  .svg-editor {
+    padding: 20px;
+
+    svg {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .modal-actions {
+    grid-template-columns: 1fr;
+  }
+}
