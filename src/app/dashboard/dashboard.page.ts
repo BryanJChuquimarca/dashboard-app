@@ -318,7 +318,6 @@ export class DashboardPage implements OnInit {
         console.log('Dashboard data:', response);
         this.itemsDashboard = response;
         this.itemsDashboardOriginal = [...response];
-        this.getItemImportant();
         this.updateStatusChart();
         this.updateActivityChart();
         console.log('Dashboard and chart updated');
