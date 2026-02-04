@@ -84,10 +84,19 @@ interface ActivityLog {
 })
 export class DashboardPage implements OnInit {
   public itemsDashboard: any[] = [];
+  public itemsDashboardOriginal: any[] = [];
   public showDownloadMenu = false;
   public itemImportant: any[] = [];
   public highlightedTaskId: string | null = null;
   private readonly ACTIVITY_STORAGE_KEY = 'dashboard_activity_log';
+  public currentFilter:
+    | 'none'
+    | 'date'
+    | 'completed'
+    | 'in-progress'
+    | 'pending'
+    | 'alphabetic' = 'none';
+  public filterLabel: string = 'Filtrar';
   toastr = inject(ToastrService);
   statusChartData = {
     labels: ['Completada', 'En Progreso', 'Pendiente'],
@@ -308,6 +317,8 @@ export class DashboardPage implements OnInit {
       (response: any) => {
         console.log('Dashboard data:', response);
         this.itemsDashboard = response;
+        this.itemsDashboardOriginal = [...response];
+        this.getItemImportant();
         this.updateStatusChart();
         this.updateActivityChart();
         console.log('Dashboard and chart updated');
@@ -500,8 +511,6 @@ export class DashboardPage implements OnInit {
     return `${year}-${month}-${day}`;
   }
 
-  filterItems() {}
-
   downloadItem(
     tipo: 'todas' | 'completed' | 'pending' | 'individual' | 'in-progress',
     tarea?: any,
@@ -536,5 +545,77 @@ export class DashboardPage implements OnInit {
 
     doc.save(`${titulo}.pdf`);
     this.toastr.success('¡Descarga completada!', 'Éxito');
+  }
+
+  filterItems() {
+    const filterSequence: Array<typeof this.currentFilter> = [
+      'none',
+      'date',
+      'completed',
+      'in-progress',
+      'pending',
+      'alphabetic',
+    ];
+
+    const currentIndex = filterSequence.indexOf(this.currentFilter);
+    const nextIndex = (currentIndex + 1) % filterSequence.length;
+    this.currentFilter = filterSequence[nextIndex];
+
+    this.applyFilter();
+  }
+
+  private applyFilter() {
+    switch (this.currentFilter) {
+      case 'none':
+        this.itemsDashboard = [...this.itemsDashboardOriginal];
+        this.filterLabel = 'Filtrar';
+        this.toastr.info('Mostrando orden original', 'Filtro');
+        break;
+
+      case 'date':
+        this.itemsDashboard = [...this.itemsDashboardOriginal].sort((a, b) => {
+          return (
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          );
+        });
+        this.filterLabel = 'Por Fecha';
+        this.toastr.info(
+          'Ordenado por fecha (más recientes primero)',
+          'Filtro',
+        );
+        break;
+
+      case 'completed':
+        this.itemsDashboard = this.itemsDashboardOriginal
+          .filter((item) => item.status === 'completed')
+          .sort((a, b) => a.title.localeCompare(b.title));
+        this.filterLabel = 'Completadas';
+        this.toastr.info('Mostrando solo tareas completadas', 'Filtro');
+        break;
+
+      case 'in-progress':
+        this.itemsDashboard = this.itemsDashboardOriginal
+          .filter((item) => item.status === 'in-progress')
+          .sort((a, b) => a.title.localeCompare(b.title));
+        this.filterLabel = 'En Progreso';
+        this.toastr.info('Mostrando solo tareas en progreso', 'Filtro');
+        break;
+
+      case 'pending':
+        this.itemsDashboard = this.itemsDashboardOriginal
+          .filter((item) => item.status === 'pending')
+          .sort((a, b) => a.title.localeCompare(b.title));
+        this.filterLabel = 'Pendientes';
+        this.toastr.info('Mostrando solo tareas pendientes', 'Filtro');
+        break;
+
+      case 'alphabetic':
+        this.itemsDashboard = [...this.itemsDashboardOriginal].sort((a, b) => {
+          return a.title.localeCompare(b.title);
+        });
+        this.filterLabel = 'A-Z';
+        this.toastr.info('Ordenado alfabéticamente', 'Filtro');
+        break;
+    }
   }
 }
